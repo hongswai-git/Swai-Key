@@ -14,7 +14,7 @@
         WindowStartupLocation="CenterScreen"
         Icon="assets/icon.ico"
         Background="Transparent"
-        FontFamily="Open Sans, Source Han Serif SC">
+        FontFamily="Segoe UI, Microsoft YaHei UI, Open Sans">
   <Window.Resources>
     <SolidColorBrush x:Key="AccentBrush" Color="#00A7C8" />
     <SolidColorBrush x:Key="AccentHoverBrush" Color="#0093B2" />
@@ -166,7 +166,7 @@
 
         <StackPanel Grid.Row="0" Margin="0,0,0,28">
           <TextBlock Text="自动按键" Foreground="{StaticResource TextPrimary}" FontSize="34" FontWeight="Bold" />
-          <TextBlock Text="点键位框后按目标键，F7 启动或停止。" Margin="0,8,0,0" Foreground="{StaticResource TextSecondary}" FontSize="13" />
+          <TextBlock Text="点击键位框后按目标键，F7 启动或停止。" Margin="0,8,0,0" Foreground="{StaticResource TextSecondary}" FontSize="13" TextWrapping="Wrap" />
         </StackPanel>
 
         <Grid Grid.Row="1">

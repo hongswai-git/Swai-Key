@@ -6,6 +6,10 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>WpfKeyAutoClicker</RootNamespace>
     <AssemblyName>WpfKeyAutoClicker</AssemblyName>
+    <AssemblyTitle>Swai Key</AssemblyTitle>
+    <Product>Swai Key</Product>
+    <Company>Hongswai</Company>
+    <Copyright>Copyright 2026 Hongswai</Copyright>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>assets\icon.ico</ApplicationIcon>
