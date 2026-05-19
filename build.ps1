@@ -9,10 +9,10 @@ if (!(Test-Path $msbuild)) {
   throw 'MSBuild not found.'
 }
 
-& $msbuild (Join-Path $root 'WpfKeyAutoClicker.csproj') /nologo /t:Restore,Build /p:Configuration=Release /p:Platform=AnyCPU
+& $msbuild (Join-Path $root 'Swai Key.csproj') /nologo /t:Restore,Build /p:Configuration=Release /p:Platform=AnyCPU
 if ($LASTEXITCODE -ne 0) {
   exit $LASTEXITCODE
 }
 
-$exe = Join-Path $root 'publish\WpfKeyAutoClicker.exe'
+$exe = Join-Path $root 'publish\Swai Key.exe'
 Write-Host "Built: $exe"
