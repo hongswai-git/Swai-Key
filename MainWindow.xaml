@@ -215,9 +215,9 @@
       <Grid Grid.Row="1" Margin="16,12,16,0">
         <Grid.RowDefinitions>
           <RowDefinition Height="136" />
-          <RowDefinition Height="158" />
-          <RowDefinition Height="86" />
-          <RowDefinition Height="54" />
+          <RowDefinition Height="166" />
+          <RowDefinition Height="90" />
+          <RowDefinition Height="56" />
           <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
@@ -234,10 +234,13 @@
               <EventTrigger RoutedEvent="FrameworkElement.Loaded">
                 <BeginStoryboard>
                   <Storyboard RepeatBehavior="Forever" AutoReverse="True">
-                    <DoubleAnimation Storyboard.TargetName="ReadyGlow" Storyboard.TargetProperty="Opacity" From="0.42" To="0.9" Duration="0:0:1.45" />
-                    <DoubleAnimation Storyboard.TargetName="ReadyDot" Storyboard.TargetProperty="Opacity" From="0.72" To="1" Duration="0:0:1.45" />
-                    <DoubleAnimation Storyboard.TargetName="ReadyText" Storyboard.TargetProperty="Opacity" From="0.78" To="1" Duration="0:0:1.45" />
+                    <DoubleAnimation Storyboard.TargetName="ReadyGlow" Storyboard.TargetProperty="Opacity" From="0.25" To="0.95" Duration="0:0:1.45" />
+                    <DoubleAnimation Storyboard.TargetName="ReadyDot" Storyboard.TargetProperty="Opacity" From="0.82" To="1" Duration="0:0:1.45" />
+                    <DoubleAnimation Storyboard.TargetName="ReadyText" Storyboard.TargetProperty="Opacity" From="0.7" To="1" Duration="0:0:1.45" />
+                    <DoubleAnimation Storyboard.TargetName="ReadyPulse" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)" From="0.86" To="1.16" Duration="0:0:1.45" />
+                    <DoubleAnimation Storyboard.TargetName="ReadyPulse" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)" From="0.86" To="1.16" Duration="0:0:1.45" />
                     <DoubleAnimation Storyboard.TargetName="KeyGlow" Storyboard.TargetProperty="Opacity" From="0.45" To="0.75" Duration="0:0:1.65" />
+                    <DoubleAnimation Storyboard.TargetName="KeyFloat" Storyboard.TargetProperty="Y" From="0" To="-3" Duration="0:0:1.8" />
                   </Storyboard>
                 </BeginStoryboard>
               </EventTrigger>
@@ -274,17 +277,20 @@
                 <TextBlock Text="SMALL · FAST · CLEAN" Foreground="#5B7CFF" FontFamily="Consolas" FontSize="11" FontWeight="Bold" />
                 <TextBlock x:Name="HeroSubtitleText" Text="小体积、无广告。F7 启动或停止。" Margin="0,7,0,0" Foreground="{StaticResource TextPrimary}" FontSize="12" FontWeight="SemiBold" TextWrapping="Wrap" MaxWidth="220" LineHeight="15" />
                 <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
-                  <Grid Width="17" Height="17" VerticalAlignment="Center">
-                    <Ellipse x:Name="ReadyGlow" Fill="{StaticResource Cyan}" Opacity="0.55">
+                  <Grid x:Name="ReadyPulse" Width="17" Height="17" VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5">
+                    <Grid.RenderTransform>
+                      <ScaleTransform ScaleX="1" ScaleY="1" />
+                    </Grid.RenderTransform>
+                    <Ellipse x:Name="ReadyGlow" Fill="#A3E635" Opacity="0.55">
                       <Ellipse.Effect>
-                        <DropShadowEffect BlurRadius="16" ShadowDepth="0" Opacity="0.9" Color="#22D3EE" />
+                        <DropShadowEffect BlurRadius="18" ShadowDepth="0" Opacity="0.95" Color="#A3E635" />
                       </Ellipse.Effect>
                     </Ellipse>
-                    <Ellipse x:Name="ReadyDot" Width="9" Height="9" Fill="{StaticResource Cyan}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    <Ellipse x:Name="ReadyDot" Width="9" Height="9" Fill="#A3E635" HorizontalAlignment="Center" VerticalAlignment="Center" />
                   </Grid>
-                  <TextBlock x:Name="ReadyText" Text="READY" Margin="8,0,0,0" Foreground="{StaticResource Cyan}" FontFamily="Consolas" FontSize="16" FontWeight="Bold" VerticalAlignment="Center">
+                  <TextBlock x:Name="ReadyText" Text="READY" Margin="8,0,0,0" Foreground="#22F3B4" FontFamily="Consolas" FontSize="16" FontWeight="Bold" VerticalAlignment="Center">
                     <TextBlock.Effect>
-                      <DropShadowEffect BlurRadius="8" ShadowDepth="0" Opacity="0.65" Color="#22D3EE" />
+                      <DropShadowEffect BlurRadius="9" ShadowDepth="0" Opacity="0.78" Color="#22F3B4" />
                     </TextBlock.Effect>
                   </TextBlock>
                   <TextBlock Text=" : :" Margin="12,0,0,0" Foreground="{StaticResource Cyan}" FontFamily="Consolas" FontSize="13" FontWeight="Bold" Opacity="0.8" VerticalAlignment="Center" />
@@ -293,6 +299,9 @@
               </StackPanel>
 
               <Viewbox Grid.Column="1" Width="108" Height="88" HorizontalAlignment="Right" VerticalAlignment="Center" Stretch="Uniform">
+              <Viewbox.RenderTransform>
+                <TranslateTransform x:Name="KeyFloat" Y="0" />
+              </Viewbox.RenderTransform>
               <Canvas Width="150" Height="122" ClipToBounds="False">
                 <Ellipse x:Name="KeyGlow" Width="112" Height="28" Canvas.Left="24" Canvas.Top="92" Fill="#22D3EE" Opacity="0.58">
                   <Ellipse.Effect>
@@ -422,32 +431,32 @@
             <ColumnDefinition Width="12" />
             <ColumnDefinition Width="*" />
           </Grid.ColumnDefinitions>
-          <Border Padding="14,9" CornerRadius="8" Background="{StaticResource CardGradient}" BorderBrush="{StaticResource StrokeHot}" BorderThickness="2">
+          <Border Padding="14,8" CornerRadius="8" Background="{StaticResource CardGradient}" BorderBrush="{StaticResource StrokeHot}" BorderThickness="2">
             <StackPanel>
               <TextBlock x:Name="StatusLabel" Text="状态" Foreground="{StaticResource Purple}" FontSize="14" FontWeight="Bold" />
-              <StackPanel Orientation="Horizontal" Margin="0,9,0,0">
-                <TextBlock Text="♥" Foreground="{StaticResource Pink}" FontSize="18" FontWeight="Black" VerticalAlignment="Center" />
-                <TextBlock x:Name="StatusText" Text="已停止" Margin="11,0,0,0" Foreground="{StaticResource Cyan}" FontSize="20" FontWeight="Black" VerticalAlignment="Center" />
+              <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                <TextBlock Text="♥" Foreground="{StaticResource Pink}" FontSize="17" FontWeight="Black" VerticalAlignment="Center" />
+                <TextBlock x:Name="StatusText" Text="已停止" Margin="10,0,0,0" Foreground="{StaticResource Cyan}" FontSize="18" FontWeight="Black" VerticalAlignment="Center" />
               </StackPanel>
             </StackPanel>
           </Border>
 
-          <Border Grid.Column="2" Padding="14,9" CornerRadius="8" Background="{StaticResource CardGradient}" BorderBrush="{StaticResource StrokeHot}" BorderThickness="2">
+          <Border Grid.Column="2" Padding="14,8" CornerRadius="8" Background="{StaticResource CardGradient}" BorderBrush="{StaticResource StrokeHot}" BorderThickness="2">
             <StackPanel>
               <TextBlock x:Name="CountLabel" Text="按键次数" Foreground="{StaticResource Purple}" FontSize="14" FontWeight="Bold" />
-              <StackPanel Orientation="Horizontal" Margin="0,9,0,0">
-                <TextBlock Text="★" Foreground="{StaticResource Yellow}" FontSize="18" FontWeight="Black" VerticalAlignment="Center" />
-                <TextBlock x:Name="CountText" Text="0" Margin="11,0,0,0" Foreground="{StaticResource TextPrimary}" FontSize="20" FontWeight="Black" VerticalAlignment="Center" />
+              <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                <TextBlock Text="★" Foreground="{StaticResource Yellow}" FontSize="17" FontWeight="Black" VerticalAlignment="Center" />
+                <TextBlock x:Name="CountText" Text="0" Margin="10,0,0,0" Foreground="{StaticResource TextPrimary}" FontSize="18" FontWeight="Black" VerticalAlignment="Center" />
                 <TextBlock x:Name="CountUnitText" Text="次" Margin="10,0,0,2" Foreground="{StaticResource TextPrimary}" FontSize="13" VerticalAlignment="Center" />
               </StackPanel>
             </StackPanel>
           </Border>
         </Grid>
 
-        <Button x:Name="ToggleButton" Grid.Row="3" Margin="4,10,4,0" Content=">> 开始 F7" Style="{StaticResource PrimaryButton}" Click="ToggleButton_Click" />
+        <Button x:Name="ToggleButton" Grid.Row="3" Margin="4,6,4,0" VerticalAlignment="Top" Content=">> 开始 F7" Style="{StaticResource PrimaryButton}" Click="ToggleButton_Click" />
 
-        <Grid Grid.Row="4" Margin="0,12,0,0">
-          <Border Height="44" VerticalAlignment="Top" CornerRadius="8" Background="#111735" BorderBrush="{StaticResource Stroke}" BorderThickness="2">
+        <Grid Grid.Row="4" Margin="0,0,0,0">
+          <Border Height="40" VerticalAlignment="Bottom" Margin="0,0,0,8" CornerRadius="8" Background="#111735" BorderBrush="{StaticResource Stroke}" BorderThickness="2">
             <Grid>
               <CheckBox x:Name="TopmostBox" Margin="16,0,0,0" Content="窗口置顶" VerticalAlignment="Center" HorizontalAlignment="Left" Style="{StaticResource SwaiCheckBox}" Checked="TopmostBox_Changed" Unchecked="TopmostBox_Changed" />
             </Grid>
