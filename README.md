@@ -8,7 +8,7 @@ Small keyboard auto key presser for Windows.
 
 ## 中文
 
-![Swai Key 中文界面](docs/images/swai-key-cn.png)
+![Swai Key 中文界面](docs/images/swai-key-v1-cn.png)
 
 ### 这是什么
 
@@ -86,7 +86,7 @@ Swai Key 会根据 Windows 当前界面语言显示中文或英文。点击底�
 
 ## English
 
-![Swai Key English UI](docs/images/swai-key-en.png)
+![Swai Key English UI](docs/images/swai-key-v1-en.png)
 
 ### What It Is
 
