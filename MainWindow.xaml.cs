@@ -1,7 +1,10 @@
 using System;
 using System.ComponentModel;
+using System.Globalization;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
@@ -22,13 +25,19 @@ namespace WpfKeyAutoClicker
         private readonly DispatcherTimer startDelayTimer = new DispatcherTimer();
         private Forms.Keys targetKey = Forms.Keys.Space;
         private HwndSource hwndSource;
+        private UiText text;
         private long pressCount;
         private bool isPressing;
         private bool isArming;
+        private bool useChinese;
 
         public MainWindow()
         {
             InitializeComponent();
+            useChinese = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName.Equals("zh", StringComparison.OrdinalIgnoreCase);
+            text = UiText.For(useChinese);
+            ApplyText();
+
             Loaded += MainWindow_Loaded;
             Closed += MainWindow_Closed;
 
@@ -55,7 +64,7 @@ namespace WpfKeyAutoClicker
 
             if (!RegisterHotKey(helper.Handle, HotkeyId, ModNone, VkF7))
             {
-                MessageBox.Show(this, "F7 热键注册失败，可能已经被其他程序占用。你仍然可以使用窗口里的按钮启动或停止。", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show(this, text.HotkeyFailed, text.Tip, MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
 
@@ -85,9 +94,9 @@ namespace WpfKeyAutoClicker
         private void KeyBox_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             e.Handled = true;
-            Forms.Keys key = KeyInterop.VirtualKeyFromKey(e.Key == Key.System ? e.SystemKey : e.Key) == 0
-                ? Forms.Keys.Space
-                : (Forms.Keys)KeyInterop.VirtualKeyFromKey(e.Key == Key.System ? e.SystemKey : e.Key);
+            var actualKey = e.Key == Key.System ? e.SystemKey : e.Key;
+            var virtualKey = KeyInterop.VirtualKeyFromKey(actualKey);
+            var key = virtualKey == 0 ? Forms.Keys.Space : (Forms.Keys)virtualKey;
 
             if (key == Forms.Keys.ShiftKey || key == Forms.Keys.ControlKey || key == Forms.Keys.Menu)
             {
@@ -98,6 +107,25 @@ namespace WpfKeyAutoClicker
             KeyBox.Text = KeyName(targetKey);
         }
 
+        private void IntervalBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            e.Handled = !Regex.IsMatch(e.Text, "^[0-9]+$");
+        }
+
+        private void IntervalBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            ReadInterval();
+        }
+
+        private void IntervalBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                ReadInterval();
+                e.Handled = true;
+            }
+        }
+
         private void ToggleButton_Click(object sender, RoutedEventArgs e)
         {
             TogglePressing();
@@ -106,6 +134,13 @@ namespace WpfKeyAutoClicker
         private void TopmostBox_Changed(object sender, RoutedEventArgs e)
         {
             Topmost = TopmostBox.IsChecked == true;
+        }
+
+        private void FooterText_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            useChinese = !useChinese;
+            text = UiText.For(useChinese);
+            ApplyText();
         }
 
         private void TitleBar_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -120,7 +155,7 @@ namespace WpfKeyAutoClicker
         {
             while (source != null)
             {
-                if (source is System.Windows.Controls.Button)
+                if (source is Button)
                 {
                     return true;
                 }
@@ -171,14 +206,13 @@ namespace WpfKeyAutoClicker
 
         private int ReadInterval()
         {
-            int interval;
-            if (!int.TryParse(IntervalBox.Text, out interval))
+            if (!int.TryParse(IntervalBox.Text, out var interval))
             {
                 interval = 100;
             }
 
             interval = Math.Max(10, Math.Min(600000, interval));
-            IntervalBox.Text = interval.ToString();
+            IntervalBox.Text = interval.ToString(CultureInfo.InvariantCulture);
             return interval;
         }
 
@@ -186,21 +220,21 @@ namespace WpfKeyAutoClicker
         {
             if (isArming)
             {
-                ToggleButton.Content = "停止 F7";
-                StatusText.Text = "准备中";
+                ToggleButton.Content = text.StopButton;
+                StatusText.Text = text.Ready;
             }
             else if (isPressing)
             {
-                ToggleButton.Content = "停止 F7";
-                StatusText.Text = "运行中";
+                ToggleButton.Content = text.StopButton;
+                StatusText.Text = text.Running;
             }
             else
             {
-                ToggleButton.Content = "开始 F7";
-                StatusText.Text = "已停止";
+                ToggleButton.Content = text.StartButton;
+                StatusText.Text = text.Stopped;
             }
 
-            CountText.Text = pressCount.ToString();
+            CountText.Text = pressCount.ToString(CultureInfo.InvariantCulture);
         }
 
         private void DoKeyPress()
@@ -209,13 +243,27 @@ namespace WpfKeyAutoClicker
             {
                 KeyboardPresser.Press(targetKey, CtrlBox.IsChecked == true, ShiftBox.IsChecked == true, AltBox.IsChecked == true);
                 pressCount++;
-                CountText.Text = pressCount.ToString();
+                CountText.Text = pressCount.ToString(CultureInfo.InvariantCulture);
             }
             catch (Win32Exception)
             {
                 StopPressing();
-                MessageBox.Show(this, "发送按键失败。", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(this, text.SendFailed, text.Error, MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        private void ApplyText()
+        {
+            SubtitleText.Text = text.Subtitle;
+            KeyLabel.Text = text.KeyLabel;
+            ModifiersLabel.Text = text.ModifiersLabel;
+            IntervalLabel.Text = text.IntervalLabel;
+            StatusLabel.Text = text.StatusLabel;
+            CountLabel.Text = text.CountLabel;
+            CountUnitText.Text = text.CountUnit;
+            TopmostBox.Content = text.Topmost;
+            FooterText.Text = text.Footer;
+            RefreshStatus();
         }
 
         private static string KeyName(Forms.Keys key)
@@ -223,6 +271,9 @@ namespace WpfKeyAutoClicker
             if (key == Forms.Keys.Space) return "Space";
             if (key == Forms.Keys.Return) return "Enter";
             if (key == Forms.Keys.Escape) return "Esc";
+            if (key == Forms.Keys.Back) return "Backspace";
+            if (key == Forms.Keys.Next) return "PageDown";
+            if (key == Forms.Keys.Prior) return "PageUp";
             return key.ToString();
         }
 
@@ -231,6 +282,78 @@ namespace WpfKeyAutoClicker
 
         [DllImport("user32.dll", SetLastError = true)]
         private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+
+        private sealed class UiText
+        {
+            public string Subtitle { get; private set; }
+            public string KeyLabel { get; private set; }
+            public string ModifiersLabel { get; private set; }
+            public string IntervalLabel { get; private set; }
+            public string StatusLabel { get; private set; }
+            public string CountLabel { get; private set; }
+            public string CountUnit { get; private set; }
+            public string Topmost { get; private set; }
+            public string Footer { get; private set; }
+            public string StartButton { get; private set; }
+            public string StopButton { get; private set; }
+            public string Stopped { get; private set; }
+            public string Ready { get; private set; }
+            public string Running { get; private set; }
+            public string Tip { get; private set; }
+            public string Error { get; private set; }
+            public string HotkeyFailed { get; private set; }
+            public string SendFailed { get; private set; }
+
+            public static UiText For(bool chinese)
+            {
+                if (chinese)
+                {
+                    return new UiText
+                    {
+                        Subtitle = "小体积、无广告。F7 启动或停止。",
+                        KeyLabel = "连点键位",
+                        ModifiersLabel = "组合按键",
+                        IntervalLabel = "按键间隔",
+                        StatusLabel = "状态",
+                        CountLabel = "按键次数",
+                        CountUnit = "次",
+                        Topmost = "窗口置顶",
+                        Footer = "♥  Designed by Hongswai · 中文  ♥",
+                        StartButton = ">> 开始 F7",
+                        StopButton = ">> 停止 F7",
+                        Stopped = "已停止",
+                        Ready = "准备中",
+                        Running = "运行中",
+                        Tip = "提示",
+                        Error = "错误",
+                        HotkeyFailed = "F7 热键注册失败，可能已被其他程序占用。你仍然可以使用窗口里的按钮启动或停止。",
+                        SendFailed = "发送按键失败。"
+                    };
+                }
+
+                return new UiText
+                {
+                    Subtitle = "Small, ad-free. Press F7 to start or stop.",
+                    KeyLabel = "Key",
+                    ModifiersLabel = "Modifiers",
+                    IntervalLabel = "Interval",
+                    StatusLabel = "Status",
+                    CountLabel = "Presses",
+                    CountUnit = "times",
+                    Topmost = "Always on top",
+                    Footer = "♥  Designed by Hongswai · English  ♥",
+                    StartButton = ">> Start F7",
+                    StopButton = ">> Stop F7",
+                    Stopped = "Stopped",
+                    Ready = "Ready",
+                    Running = "Running",
+                    Tip = "Tip",
+                    Error = "Error",
+                    HotkeyFailed = "The F7 hotkey could not be registered. It may already be used by another app. You can still use the button in this window.",
+                    SendFailed = "Failed to send the key press."
+                };
+            }
+        }
     }
 
     internal static class KeyboardPresser
@@ -240,8 +363,8 @@ namespace WpfKeyAutoClicker
 
         public static void Press(Forms.Keys key, bool ctrl, bool shift, bool alt)
         {
-            Input[] inputs = new Input[8];
-            int index = 0;
+            var inputs = new Input[8];
+            var index = 0;
 
             if (ctrl) AddKey(inputs, ref index, Forms.Keys.ControlKey, false);
             if (shift) AddKey(inputs, ref index, Forms.Keys.ShiftKey, false);
@@ -254,9 +377,9 @@ namespace WpfKeyAutoClicker
             if (shift) AddKey(inputs, ref index, Forms.Keys.ShiftKey, true);
             if (ctrl) AddKey(inputs, ref index, Forms.Keys.ControlKey, true);
 
-            Input[] actual = new Input[index];
+            var actual = new Input[index];
             Array.Copy(inputs, actual, index);
-            uint sent = SendInput((uint)actual.Length, actual, Marshal.SizeOf(typeof(Input)));
+            var sent = SendInput((uint)actual.Length, actual, Marshal.SizeOf(typeof(Input)));
             if (sent != actual.Length)
             {
                 throw new Win32Exception(Marshal.GetLastWin32Error());
