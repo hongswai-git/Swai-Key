@@ -254,7 +254,9 @@ namespace WpfKeyAutoClicker
 
         private void ApplyText()
         {
-            SubtitleText.Text = text.Subtitle;
+            Title = text.Title;
+            TitleBarText.Text = text.Title;
+            HeroSubtitleText.Text = text.HeroSubtitle;
             KeyLabel.Text = text.KeyLabel;
             ModifiersLabel.Text = text.ModifiersLabel;
             IntervalLabel.Text = text.IntervalLabel;
@@ -285,7 +287,8 @@ namespace WpfKeyAutoClicker
 
         private sealed class UiText
         {
-            public string Subtitle { get; private set; }
+            public string Title { get; private set; }
+            public string HeroSubtitle { get; private set; }
             public string KeyLabel { get; private set; }
             public string ModifiersLabel { get; private set; }
             public string IntervalLabel { get; private set; }
@@ -310,7 +313,8 @@ namespace WpfKeyAutoClicker
                 {
                     return new UiText
                     {
-                        Subtitle = "小体积、无广告。F7 启动或停止。",
+                        Title = "Swai Key 键盘连点器",
+                        HeroSubtitle = "小体积、无广告。F7 启动或停止。",
                         KeyLabel = "连点键位",
                         ModifiersLabel = "组合按键",
                         IntervalLabel = "按键间隔",
@@ -333,7 +337,8 @@ namespace WpfKeyAutoClicker
 
                 return new UiText
                 {
-                    Subtitle = "Small, ad-free. Press F7 to start or stop.",
+                    Title = "Swai Key Keyboard Clicker",
+                    HeroSubtitle = "Small, ad-free. Press F7 to start or stop.",
                     KeyLabel = "Key",
                     ModifiersLabel = "Modifiers",
                     IntervalLabel = "Interval",

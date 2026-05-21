@@ -76,23 +76,31 @@
     </Style>
 
     <Style x:Key="PrimaryButton" TargetType="{x:Type Button}">
-      <Setter Property="Height" Value="48" />
+      <Setter Property="Height" Value="44" />
       <Setter Property="BorderThickness" Value="0" />
       <Setter Property="Foreground" Value="White" />
-      <Setter Property="FontSize" Value="22" />
+      <Setter Property="FontSize" Value="20" />
       <Setter Property="FontWeight" Value="Black" />
       <Setter Property="Cursor" Value="Hand" />
       <Setter Property="Template">
         <Setter.Value>
           <ControlTemplate TargetType="{x:Type Button}">
-            <Border x:Name="Outer" CornerRadius="8" Background="#0A0E23" BorderBrush="#5B48F2" BorderThickness="2" SnapsToDevicePixels="True">
-              <Border Margin="4" CornerRadius="5" Background="{StaticResource ActionGradient}" BorderBrush="#5B48F2" BorderThickness="1" SnapsToDevicePixels="True">
-                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+            <Grid>
+              <Border x:Name="HoverGlow" CornerRadius="8" BorderBrush="{StaticResource Cyan}" BorderThickness="2" Opacity="0">
+                <Border.Effect>
+                  <DropShadowEffect BlurRadius="14" ShadowDepth="0" Opacity="0.8" Color="#22D3EE" />
+                </Border.Effect>
               </Border>
-            </Border>
+              <Border x:Name="Outer" CornerRadius="8" Background="#0A0E23" BorderBrush="#5B48F2" BorderThickness="2" SnapsToDevicePixels="True">
+                <Border Margin="4" CornerRadius="5" Background="{StaticResource ActionGradient}" BorderBrush="#5B48F2" BorderThickness="1" SnapsToDevicePixels="True">
+                  <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </Border>
+              </Border>
+            </Grid>
             <ControlTemplate.Triggers>
               <Trigger Property="IsMouseOver" Value="True">
                 <Setter TargetName="Outer" Property="BorderBrush" Value="{StaticResource Pink}" />
+                <Setter TargetName="HoverGlow" Property="Opacity" Value="0.55" />
               </Trigger>
               <Trigger Property="IsPressed" Value="True">
                 <Setter TargetName="Outer" Property="Opacity" Value="0.82" />
@@ -104,22 +112,21 @@
     </Style>
 
     <Style x:Key="PixelTextBox" TargetType="{x:Type TextBox}">
-      <Setter Property="Height" Value="38" />
-      <Setter Property="Padding" Value="12,0" />
+      <Setter Property="Height" Value="28" />
+      <Setter Property="Padding" Value="10,0" />
       <Setter Property="VerticalContentAlignment" Value="Center" />
       <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
       <Setter Property="CaretBrush" Value="{StaticResource Cyan}" />
       <Setter Property="Background" Value="#0F1430" />
       <Setter Property="BorderBrush" Value="#2D2A68" />
       <Setter Property="BorderThickness" Value="2" />
-      <Setter Property="FontSize" Value="18" />
+      <Setter Property="FontSize" Value="14" />
       <Setter Property="FontWeight" Value="Bold" />
       <Setter Property="Template">
         <Setter.Value>
           <ControlTemplate TargetType="{x:Type TextBox}">
             <Border x:Name="Root" CornerRadius="4" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
               <Grid>
-                <Border Height="3" VerticalAlignment="Top" Margin="5,4,5,0" Background="#1D2550" />
                 <ScrollViewer x:Name="PART_ContentHost" Margin="{TemplateBinding Padding}" />
               </Grid>
             </Border>
@@ -135,14 +142,14 @@
 
     <Style x:Key="SwaiCheckBox" TargetType="{x:Type CheckBox}">
       <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
-      <Setter Property="FontSize" Value="16" />
+      <Setter Property="FontSize" Value="15" />
       <Setter Property="FontWeight" Value="SemiBold" />
       <Setter Property="Cursor" Value="Hand" />
       <Setter Property="Template">
         <Setter.Value>
           <ControlTemplate TargetType="{x:Type CheckBox}">
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-              <Border x:Name="Box" Width="22" Height="22" CornerRadius="4" Background="#101633" BorderBrush="#313071" BorderThickness="2">
+              <Border x:Name="Box" Width="20" Height="20" CornerRadius="4" Background="#101633" BorderBrush="#313071" BorderThickness="2">
                 <Grid>
                   <Rectangle x:Name="Glow" Width="10" Height="10" Fill="{StaticResource Cyan}" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed" />
                 </Grid>
@@ -165,7 +172,7 @@
 
     <Style x:Key="IconCell" TargetType="{x:Type Border}">
       <Setter Property="Width" Value="30" />
-      <Setter Property="Height" Value="30" />
+      <Setter Property="Height" Value="24" />
       <Setter Property="CornerRadius" Value="4" />
       <Setter Property="BorderBrush" Value="#201B58" />
       <Setter Property="BorderThickness" Value="2" />
@@ -189,7 +196,7 @@
             <Border Width="30" Height="30" CornerRadius="4" Background="#1B1452" BorderBrush="#302A76" BorderThickness="2" ClipToBounds="True">
               <Image Source="assets/swai-key.png" Stretch="UniformToFill" />
             </Border>
-            <TextBlock Text="Swai Key" Margin="10,0,0,0" VerticalAlignment="Center" Foreground="{StaticResource TextPrimary}" FontSize="20" FontWeight="Bold" />
+            <TextBlock x:Name="TitleBarText" Text="Swai Key 键盘连点器" Margin="10,0,0,0" VerticalAlignment="Center" Foreground="{StaticResource TextPrimary}" FontSize="18" FontWeight="Bold" />
           </StackPanel>
           <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,16,0">
             <Button Style="{StaticResource TitleButton}" Click="MinimizeButton_Click">
@@ -205,48 +212,146 @@
         </Grid>
       </Border>
 
-      <Grid Grid.Row="1" Margin="16,14,16,0">
+      <Grid Grid.Row="1" Margin="16,12,16,0">
         <Grid.RowDefinitions>
-          <RowDefinition Height="110" />
-          <RowDefinition Height="178" />
-          <RowDefinition Height="104" />
-          <RowDefinition Height="60" />
+          <RowDefinition Height="136" />
+          <RowDefinition Height="158" />
+          <RowDefinition Height="86" />
+          <RowDefinition Height="54" />
           <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0">
-          <StackPanel VerticalAlignment="Center">
-            <Grid Width="220" Height="48" HorizontalAlignment="Left">
-              <TextBlock Text="Swai Key" Margin="3,3,0,0" Foreground="#163B70" FontSize="38" FontWeight="Black" />
-              <TextBlock Text="Swai Key" Foreground="{StaticResource TitleGradient}" FontSize="38" FontWeight="Black" />
+        <Border Grid.Row="0" CornerRadius="8" BorderBrush="#25245F" BorderThickness="2" ClipToBounds="True">
+          <Border.Background>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+              <GradientStop Color="#070B18" Offset="0" />
+              <GradientStop Color="#0A1024" Offset="0.55" />
+              <GradientStop Color="#11162A" Offset="1" />
+            </LinearGradientBrush>
+          </Border.Background>
+          <Grid>
+            <Grid.Triggers>
+              <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+                <BeginStoryboard>
+                  <Storyboard RepeatBehavior="Forever" AutoReverse="True">
+                    <DoubleAnimation Storyboard.TargetName="ReadyGlow" Storyboard.TargetProperty="Opacity" From="0.42" To="0.9" Duration="0:0:1.45" />
+                    <DoubleAnimation Storyboard.TargetName="ReadyDot" Storyboard.TargetProperty="Opacity" From="0.72" To="1" Duration="0:0:1.45" />
+                    <DoubleAnimation Storyboard.TargetName="ReadyText" Storyboard.TargetProperty="Opacity" From="0.78" To="1" Duration="0:0:1.45" />
+                    <DoubleAnimation Storyboard.TargetName="KeyGlow" Storyboard.TargetProperty="Opacity" From="0.45" To="0.75" Duration="0:0:1.65" />
+                  </Storyboard>
+                </BeginStoryboard>
+              </EventTrigger>
+            </Grid.Triggers>
+
+            <Ellipse Width="166" Height="98" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,8,-36,0" Opacity="0.16">
+              <Ellipse.Fill>
+                <RadialGradientBrush>
+                  <GradientStop Color="#22D3EE" Offset="0" />
+                  <GradientStop Color="#7C3AED" Offset="0.42" />
+                  <GradientStop Color="#001020" Offset="1" />
+                </RadialGradientBrush>
+              </Ellipse.Fill>
+            </Ellipse>
+
+            <Canvas Opacity="0.12" IsHitTestVisible="False">
+              <Rectangle Width="2" Height="132" Fill="#3951C9" Canvas.Left="20" Canvas.Top="0" />
+              <Rectangle Width="2" Height="132" Fill="#3951C9" Canvas.Left="60" Canvas.Top="0" />
+              <Rectangle Width="2" Height="132" Fill="#3951C9" Canvas.Left="100" Canvas.Top="0" />
+              <Rectangle Width="2" Height="132" Fill="#3951C9" Canvas.Left="140" Canvas.Top="0" />
+              <Rectangle Width="2" Height="132" Fill="#3951C9" Canvas.Left="180" Canvas.Top="0" />
+              <Rectangle Width="398" Height="1" Fill="#28306C" Canvas.Left="0" Canvas.Top="34" />
+              <Rectangle Width="398" Height="1" Fill="#28306C" Canvas.Left="0" Canvas.Top="72" />
+              <Rectangle Width="398" Height="1" Fill="#28306C" Canvas.Left="0" Canvas.Top="110" />
+            </Canvas>
+
+            <Grid Margin="16,10,12,10">
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="116" />
+              </Grid.ColumnDefinitions>
+
+              <StackPanel VerticalAlignment="Center">
+                <TextBlock Text="SMALL · FAST · CLEAN" Foreground="#5B7CFF" FontFamily="Consolas" FontSize="11" FontWeight="Bold" />
+                <TextBlock x:Name="HeroSubtitleText" Text="小体积、无广告。F7 启动或停止。" Margin="0,7,0,0" Foreground="{StaticResource TextPrimary}" FontSize="12" FontWeight="SemiBold" TextWrapping="Wrap" MaxWidth="220" LineHeight="15" />
+                <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                  <Grid Width="17" Height="17" VerticalAlignment="Center">
+                    <Ellipse x:Name="ReadyGlow" Fill="{StaticResource Cyan}" Opacity="0.55">
+                      <Ellipse.Effect>
+                        <DropShadowEffect BlurRadius="16" ShadowDepth="0" Opacity="0.9" Color="#22D3EE" />
+                      </Ellipse.Effect>
+                    </Ellipse>
+                    <Ellipse x:Name="ReadyDot" Width="9" Height="9" Fill="{StaticResource Cyan}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                  </Grid>
+                  <TextBlock x:Name="ReadyText" Text="READY" Margin="8,0,0,0" Foreground="{StaticResource Cyan}" FontFamily="Consolas" FontSize="16" FontWeight="Bold" VerticalAlignment="Center">
+                    <TextBlock.Effect>
+                      <DropShadowEffect BlurRadius="8" ShadowDepth="0" Opacity="0.65" Color="#22D3EE" />
+                    </TextBlock.Effect>
+                  </TextBlock>
+                  <TextBlock Text=" : :" Margin="12,0,0,0" Foreground="{StaticResource Cyan}" FontFamily="Consolas" FontSize="13" FontWeight="Bold" Opacity="0.8" VerticalAlignment="Center" />
+                </StackPanel>
+                <TextBlock Text="v1.0.0" Margin="0,7,0,0" Foreground="#5B7CFF" FontFamily="Consolas" FontSize="11" FontWeight="Bold" Opacity="0.9" />
+              </StackPanel>
+
+              <Viewbox Grid.Column="1" Width="108" Height="88" HorizontalAlignment="Right" VerticalAlignment="Center" Stretch="Uniform">
+              <Canvas Width="150" Height="122" ClipToBounds="False">
+                <Ellipse x:Name="KeyGlow" Width="112" Height="28" Canvas.Left="24" Canvas.Top="92" Fill="#22D3EE" Opacity="0.58">
+                  <Ellipse.Effect>
+                    <DropShadowEffect BlurRadius="18" ShadowDepth="0" Opacity="0.92" Color="#22D3EE" />
+                  </Ellipse.Effect>
+                </Ellipse>
+                <Polygon Points="28,92 122,92 138,105 12,105" Fill="#111735" Stroke="#22D3EE" StrokeThickness="2" Opacity="0.9" />
+                <Polygon Points="38,30 116,43 130,82 54,96 22,68" Stroke="#EC4899" StrokeThickness="2">
+                  <Polygon.Fill>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                      <GradientStop Color="#241263" Offset="0" />
+                      <GradientStop Color="#7C3AED" Offset="0.55" />
+                      <GradientStop Color="#1B1E7A" Offset="1" />
+                    </LinearGradientBrush>
+                  </Polygon.Fill>
+                </Polygon>
+                <Polygon Points="54,96 130,82 119,101 42,112 22,68" Fill="#17135D" Stroke="#7C3AED" StrokeThickness="2" />
+                <Polygon Points="116,43 130,82 119,101 102,61" Fill="#32118A" Stroke="#EC4899" StrokeThickness="2" />
+                <Polygon Points="38,30 116,43 102,61 50,52 22,68" Stroke="#A855F7" StrokeThickness="2">
+                  <Polygon.Fill>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                      <GradientStop Color="#B635F6" Offset="0" />
+                      <GradientStop Color="#7C3AED" Offset="0.52" />
+                      <GradientStop Color="#3922AE" Offset="1" />
+                    </LinearGradientBrush>
+                  </Polygon.Fill>
+                </Polygon>
+                <Path Data="M53,38 L109,48" Stroke="#F0ABFC" StrokeThickness="3" Opacity="0.85" />
+                <Path Data="M48,101 L118,91" Stroke="#22D3EE" StrokeThickness="4" Opacity="0.95" />
+                <Path Data="M116,84 L126,80 L118,99" Stroke="#EC4899" StrokeThickness="3" Opacity="0.95" />
+                <TextBlock Text="F7" Canvas.Left="58" Canvas.Top="45" Foreground="White" FontSize="30" FontWeight="Black" RenderTransformOrigin="0.5,0.5">
+                  <TextBlock.RenderTransform>
+                    <RotateTransform Angle="11" />
+                  </TextBlock.RenderTransform>
+                  <TextBlock.Effect>
+                    <DropShadowEffect BlurRadius="4" ShadowDepth="0" Opacity="0.65" Color="#FFFFFF" />
+                  </TextBlock.Effect>
+                </TextBlock>
+                <TextBlock Text="+" Canvas.Left="16" Canvas.Top="14" Foreground="{StaticResource Cyan}" FontSize="17" FontWeight="Black" />
+                <TextBlock Text="+" Canvas.Left="126" Canvas.Top="58" Foreground="{StaticResource Pink}" FontSize="18" FontWeight="Black" />
+                <TextBlock Text="+" Canvas.Left="102" Canvas.Top="10" Foreground="{StaticResource Yellow}" FontSize="15" FontWeight="Black" />
+                <Rectangle Width="7" Height="7" Canvas.Left="22" Canvas.Top="44" Fill="{StaticResource Cyan}" />
+                <Rectangle Width="6" Height="6" Canvas.Left="132" Canvas.Top="26" Fill="{StaticResource Pink}" />
+                <Rectangle Width="4" Height="4" Canvas.Left="114" Canvas.Top="20" Fill="{StaticResource Purple}" Opacity="0.7" />
+                <Ellipse Width="4" Height="4" Canvas.Left="8" Canvas.Top="74" Fill="#5B7CFF" />
+              </Canvas>
+              </Viewbox>
             </Grid>
-            <TextBlock x:Name="SubtitleText" Margin="2,8,0,0" Foreground="{StaticResource Cyan}" FontSize="15" FontWeight="SemiBold" Text="小体积、无广告。F7 启动或停止。" />
-          </StackPanel>
-
-          <Grid Width="100" Height="90" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,4,0">
-            <Border Width="62" Height="62" HorizontalAlignment="Center" VerticalAlignment="Center" CornerRadius="8" Background="#8B5CF6" BorderBrush="#F7E7FF" BorderThickness="3" RenderTransformOrigin="0.5,0.5">
-              <Border.RenderTransform>
-                <TransformGroup>
-                  <RotateTransform Angle="10" />
-                  <SkewTransform AngleX="-8" />
-                </TransformGroup>
-              </Border.RenderTransform>
-              <TextBlock Text="F7" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="24" FontWeight="Black" />
-            </Border>
-            <TextBlock Text="+" Foreground="{StaticResource Yellow}" FontSize="22" FontWeight="Black" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4,8,0,0" />
-            <TextBlock Text="+" Foreground="{StaticResource Cyan}" FontSize="18" FontWeight="Black" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,4,12" />
-            <TextBlock Text="+" Foreground="{StaticResource Pink}" FontSize="20" FontWeight="Black" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,22,2,0" />
           </Grid>
-        </Grid>
+        </Border>
 
-        <Border Grid.Row="1" Padding="14" CornerRadius="8" Background="{StaticResource CardGradient}" BorderBrush="{StaticResource StrokeHot}" BorderThickness="2">
+        <Border Grid.Row="1" Margin="0,12,0,0" Padding="14,8" CornerRadius="8" Background="{StaticResource CardGradient}" BorderBrush="{StaticResource StrokeHot}" BorderThickness="2">
           <Grid>
             <Grid.RowDefinitions>
-              <RowDefinition Height="48" />
+              <RowDefinition Height="43" />
               <RowDefinition Height="2" />
-              <RowDefinition Height="50" />
+              <RowDefinition Height="44" />
               <RowDefinition Height="2" />
-              <RowDefinition Height="48" />
+              <RowDefinition Height="45" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
               <ColumnDefinition Width="138" />
@@ -267,7 +372,7 @@
                   <Rectangle Fill="#081129" Margin="1" />
                 </UniformGrid>
               </Border>
-              <TextBlock x:Name="KeyLabel" Text="连点键位" Margin="12,0,0,0" VerticalAlignment="Center" Foreground="{StaticResource TextPrimary}" FontSize="16" FontWeight="Bold" />
+              <TextBlock x:Name="KeyLabel" Text="连点键位" Margin="12,0,0,0" VerticalAlignment="Center" Foreground="{StaticResource TextPrimary}" FontSize="14" FontWeight="Bold" />
             </StackPanel>
             <TextBox x:Name="KeyBox" Grid.Column="1" Text="Space" TextAlignment="Center" IsReadOnly="True" Style="{StaticResource PixelTextBox}" PreviewKeyDown="KeyBox_PreviewKeyDown" />
 
@@ -275,13 +380,13 @@
 
             <StackPanel Grid.Row="2" Orientation="Horizontal" VerticalAlignment="Center">
               <Border Style="{StaticResource IconCell}" Background="#5AE136">
-                <Grid Margin="6">
-                  <Rectangle Width="7" Height="7" Fill="#101633" HorizontalAlignment="Center" VerticalAlignment="Top" />
-                  <Rectangle Width="7" Height="7" Fill="#101633" HorizontalAlignment="Left" VerticalAlignment="Bottom" />
-                  <Rectangle Width="7" Height="7" Fill="#101633" HorizontalAlignment="Right" VerticalAlignment="Bottom" />
+                <Grid Margin="5">
+                  <Rectangle Width="6" Height="6" Fill="#101633" HorizontalAlignment="Center" VerticalAlignment="Top" />
+                  <Rectangle Width="6" Height="6" Fill="#101633" HorizontalAlignment="Left" VerticalAlignment="Bottom" />
+                  <Rectangle Width="6" Height="6" Fill="#101633" HorizontalAlignment="Right" VerticalAlignment="Bottom" />
                 </Grid>
               </Border>
-              <TextBlock x:Name="ModifiersLabel" Text="组合按键" Margin="12,0,0,0" VerticalAlignment="Center" Foreground="{StaticResource TextPrimary}" FontSize="16" FontWeight="Bold" />
+              <TextBlock x:Name="ModifiersLabel" Text="组合按键" Margin="12,0,0,0" VerticalAlignment="Center" Foreground="{StaticResource TextPrimary}" FontSize="14" FontWeight="Bold" />
             </StackPanel>
             <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right">
               <CheckBox x:Name="CtrlBox" Content="Ctrl" Margin="0,0,10,0" Style="{StaticResource SwaiCheckBox}" />
@@ -294,56 +399,54 @@
             <StackPanel Grid.Row="4" Orientation="Horizontal" VerticalAlignment="Center">
               <Border Style="{StaticResource IconCell}" Background="#EC4899">
                 <Grid>
-                  <Ellipse Stroke="#101633" StrokeThickness="4" Margin="6" />
-                  <Rectangle Width="4" Height="10" Fill="#101633" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,6,0,0" />
+                  <Ellipse Stroke="#101633" StrokeThickness="3" Margin="5" />
+                  <Rectangle Width="3" Height="8" Fill="#101633" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,5,0,0" />
                 </Grid>
               </Border>
-              <TextBlock x:Name="IntervalLabel" Text="按键间隔" Margin="12,0,0,0" VerticalAlignment="Center" Foreground="{StaticResource TextPrimary}" FontSize="16" FontWeight="Bold" />
+              <TextBlock x:Name="IntervalLabel" Text="按键间隔" Margin="12,0,0,0" VerticalAlignment="Center" Foreground="{StaticResource TextPrimary}" FontSize="14" FontWeight="Bold" />
             </StackPanel>
-            <Grid Grid.Row="4" Grid.Column="1">
+            <Grid Grid.Row="4" Grid.Column="1" VerticalAlignment="Center">
               <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="38" />
               </Grid.ColumnDefinitions>
-              <TextBox x:Name="IntervalBox" Text="100" TextAlignment="Center" Style="{StaticResource PixelTextBox}" PreviewTextInput="IntervalBox_PreviewTextInput" LostFocus="IntervalBox_LostFocus" KeyDown="IntervalBox_KeyDown" />
-              <TextBlock Grid.Column="1" Text="ms" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="{StaticResource Purple}" FontSize="17" FontWeight="Bold" />
+              <TextBox x:Name="IntervalBox" Text="100" TextAlignment="Center" VerticalAlignment="Center" Style="{StaticResource PixelTextBox}" PreviewTextInput="IntervalBox_PreviewTextInput" LostFocus="IntervalBox_LostFocus" KeyDown="IntervalBox_KeyDown" />
+              <TextBlock Grid.Column="1" Text="ms" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="{StaticResource Purple}" FontSize="15" FontWeight="Bold" />
             </Grid>
           </Grid>
         </Border>
 
-        <Grid Grid.Row="2" Margin="0,14,0,0">
+        <Grid Grid.Row="2" Margin="0,12,0,0">
           <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="12" />
             <ColumnDefinition Width="*" />
           </Grid.ColumnDefinitions>
-          <Border Padding="14,12" CornerRadius="8" Background="{StaticResource CardGradient}" BorderBrush="{StaticResource StrokeHot}" BorderThickness="2">
+          <Border Padding="14,9" CornerRadius="8" Background="{StaticResource CardGradient}" BorderBrush="{StaticResource StrokeHot}" BorderThickness="2">
             <StackPanel>
-              <TextBlock x:Name="StatusLabel" Text="状态" Foreground="{StaticResource Purple}" FontSize="16" FontWeight="Bold" />
-              <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
-                <TextBlock Text="♥" Foreground="{StaticResource Pink}" FontSize="22" FontWeight="Black" VerticalAlignment="Center" />
-                <TextBlock x:Name="StatusText" Text="已停止" Margin="14,0,0,0" Foreground="{StaticResource Cyan}" FontSize="24" FontWeight="Black" VerticalAlignment="Center" />
+              <TextBlock x:Name="StatusLabel" Text="状态" Foreground="{StaticResource Purple}" FontSize="14" FontWeight="Bold" />
+              <StackPanel Orientation="Horizontal" Margin="0,9,0,0">
+                <TextBlock Text="♥" Foreground="{StaticResource Pink}" FontSize="18" FontWeight="Black" VerticalAlignment="Center" />
+                <TextBlock x:Name="StatusText" Text="已停止" Margin="11,0,0,0" Foreground="{StaticResource Cyan}" FontSize="20" FontWeight="Black" VerticalAlignment="Center" />
               </StackPanel>
-              <TextBlock Text=". . . . . ." Foreground="{StaticResource Purple}" FontSize="17" Opacity="0.8" />
             </StackPanel>
           </Border>
 
-          <Border Grid.Column="2" Padding="14,12" CornerRadius="8" Background="{StaticResource CardGradient}" BorderBrush="{StaticResource StrokeHot}" BorderThickness="2">
+          <Border Grid.Column="2" Padding="14,9" CornerRadius="8" Background="{StaticResource CardGradient}" BorderBrush="{StaticResource StrokeHot}" BorderThickness="2">
             <StackPanel>
-              <TextBlock x:Name="CountLabel" Text="按键次数" Foreground="{StaticResource Purple}" FontSize="16" FontWeight="Bold" />
-              <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
-                <TextBlock Text="★" Foreground="{StaticResource Yellow}" FontSize="22" FontWeight="Black" VerticalAlignment="Center" />
-                <TextBlock x:Name="CountText" Text="0" Margin="14,0,0,0" Foreground="{StaticResource TextPrimary}" FontSize="24" FontWeight="Black" VerticalAlignment="Center" />
-                <TextBlock x:Name="CountUnitText" Text="次" Margin="12,0,0,2" Foreground="{StaticResource TextPrimary}" FontSize="14" VerticalAlignment="Center" />
+              <TextBlock x:Name="CountLabel" Text="按键次数" Foreground="{StaticResource Purple}" FontSize="14" FontWeight="Bold" />
+              <StackPanel Orientation="Horizontal" Margin="0,9,0,0">
+                <TextBlock Text="★" Foreground="{StaticResource Yellow}" FontSize="18" FontWeight="Black" VerticalAlignment="Center" />
+                <TextBlock x:Name="CountText" Text="0" Margin="11,0,0,0" Foreground="{StaticResource TextPrimary}" FontSize="20" FontWeight="Black" VerticalAlignment="Center" />
+                <TextBlock x:Name="CountUnitText" Text="次" Margin="10,0,0,2" Foreground="{StaticResource TextPrimary}" FontSize="13" VerticalAlignment="Center" />
               </StackPanel>
-              <TextBlock Text=". . . . . ." Foreground="{StaticResource Purple}" FontSize="17" Opacity="0.8" />
             </StackPanel>
           </Border>
         </Grid>
 
-        <Button x:Name="ToggleButton" Grid.Row="3" Margin="4,8,4,0" Content=">> 开始 F7" Style="{StaticResource PrimaryButton}" Click="ToggleButton_Click" />
+        <Button x:Name="ToggleButton" Grid.Row="3" Margin="4,10,4,0" Content=">> 开始 F7" Style="{StaticResource PrimaryButton}" Click="ToggleButton_Click" />
 
-        <Grid Grid.Row="4" Margin="0,10,0,0">
+        <Grid Grid.Row="4" Margin="0,12,0,0">
           <Border Height="44" VerticalAlignment="Top" CornerRadius="8" Background="#111735" BorderBrush="{StaticResource Stroke}" BorderThickness="2">
             <Grid>
               <CheckBox x:Name="TopmostBox" Margin="16,0,0,0" Content="窗口置顶" VerticalAlignment="Center" HorizontalAlignment="Left" Style="{StaticResource SwaiCheckBox}" Checked="TopmostBox_Changed" Unchecked="TopmostBox_Changed" />
